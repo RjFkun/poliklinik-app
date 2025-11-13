@@ -2,79 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    // Tampilkan halaman login
+    public function showlogin()
     {
         return view('auth.login');
     }
 
-    public function showRegister()
+    // Proses login
+    public function login(Request $request)
+    { 
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            if ($user->role == 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role == 'dokter') {
+                return redirect()->route('dokter.dashboard');
+            } else {
+                return redirect()->route('pasien.dashboard');
+            }
+        }
+
+        // 🔴 Perbaikan bagian ini:
+        // Sebelumnya: return back('login')->withErrors([...])
+        // Salah, karena back() tidak menerima parameter string ('login')
+        // Yang benar:
+        return back()->with('error', 'Email atau password salah!');
+    }
+
+    // Tampilkan halaman register
+    public function showregister()
     {
         return view('auth.register');
     }
 
-    public function login (Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } elseif ($user->role === 'dokter') {
-                return redirect()->route('dokter.dashboard');
-            }
-            return redirect()->route('pasien.dashboard');
-        }
-
-        return back()->withErrors(['email' => 'Email atau Password Salah!'])->onlyInput('email');
-    }
-
+    // Proses register
     public function register(Request $request)
-{
-        $data = $request->validate([
+    {
+        $request->validate([
             'nama' => ['required', 'string', 'max:255'],
-            'alamat' => ['nullable', 'string', 'max:255'],
-            'no_ktp' => ['nullable', 'string', 'max:30'],
-            'no_hp' => ['nullable', 'string', 'max:20'],
+            'alamat' => ['required', 'string', 'max:255'], 
+            'no_ktp' => ['required', 'string', 'max:30'], 
+            'no_hp' => ['required', 'string', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', 'min:8'],
-            'role' => ['nullable', 'in:pasien,dokter,admin'],
+            'password'=> ['required', 'confirmed'],
         ]);
 
-        $user = User::create([
-            'nama' => $data['nama'],
-            'alamat' => $data['alamat'] ?? null,
-            'no_ktp' => $data['no_ktp'] ?? null,
-            'no_hp' => $data['no_hp'] ?? null,
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role' => $data['role'] ?? 'pasien',
+        User::create([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'no_ktp' => $request->no_ktp,
+            'no_hp' => $request->no_hp,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'pasien',
         ]);
 
-        Auth::login($user);
-
-        return redirect()->route('pasien.dashboard');
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
-    public function logout(Request $request)
+    // Logout
+    public function logout()
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 }
-

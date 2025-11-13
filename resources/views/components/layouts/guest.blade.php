@@ -7,11 +7,7 @@
     <title>{{ $title ?? 'Login' }}</title>
 
     {{-- <link rel="stylesheet" href="{{ mix('css/app.css') }}"> --}}
-    @if (file_exists(public_path('build/manifest.json')))
-        @vite(['resources/js/app.js', 'resources/css/app.css'])
-    @else
-        {{-- Vite manifest not found — falling back to CDN assets. Run npm install && npm run build to create manifest. --}}
-    @endif
+    @vite(['resources/js/app.js', 'resources/css/app.css'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn137C_pDww5uScbOk="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
