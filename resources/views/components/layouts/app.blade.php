@@ -6,34 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ $title ?? 'Admin Dashboard' }}</title>
 
-  {{-- =======================================================
-      OPSI 1: PAKAI FILE LOKAL VIA VITE (HANYA JIKA NPM RUN DEV)
-      Jika tidak menggunakan Vite, hapus baris ini.
-  ======================================================== --}}
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+   {{-- Vite (opsional, boleh dipakai) --}}
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-  {{-- =======================================================
-      OPSI 2: PAKAI CDN (TIDAK PERLU VITE)
-      Jika pakai ini, bisa hapus @vite di atas.
-  ======================================================== --}}
-
-  <!-- Font Awesome 6.2 -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-        integrity="sha512-Htsm8V27GzBwrVsh7E1yTF1p4cJrjZnmRk9L7ukSW3XqQOpxJQ/kkHyGEES1yEYN4PKXYK6+NwGM0AzE+3p9A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <!-- Bootstrap 4.6 (versi yang sesuai untuk AdminLTE 3.1) -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
-        crossorigin="anonymous">
-
-  <!-- AdminLTE 3.1 -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
-
-  @stack('styles')
+   <!-- Font Awesome 5.15.4 (WAJIB untuk AdminLTE 3) -->
+   <link rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+         integrity="sha512-dym6n4l6yM1u5p9Tf5L0kN5p7V0pW9T0R0Zl6Vx+X8+Y1Y0+5s0J7MZ1PzY2Hf5B8LJ9vYFZC5sZx1K9xg=="
+         crossorigin="anonymous" referrerpolicy="no-referrer">
+ 
+   <!-- Bootstrap 4.6 (AdminLTE 3 WAJIB ini) -->
+   <link rel="stylesheet"
+         href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+         crossorigin="anonymous">
+ 
+   <!-- AdminLTE 3.1 -->
+   <link rel="stylesheet"
+         href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
+ 
+   @stack('styles')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

@@ -1,4 +1,3 @@
-
 <x-layouts.app title="Data Obat">
     <div class="container-fluid px-4 mt-4">
         <div class="row">
@@ -22,40 +21,43 @@
                     <table class="table table-bordered">
                         <thead class="thead-light">
                             <tr>
-                                <th>Id</th>
+                                {{-- <th>Id</th> --}}
                                 <th>Nama Obat</th>
                                 <th>Kemasan</th>
                                 <th>Harga</th>
+                                <th>Stok</th>
                                 <th style="width: 150px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($obats as $obat)
                                 <tr>
-                                    <td>{{ $obat->id }}</td>
+                                    {{-- <td>{{ $obat->id }}</td> --}}
                                     <td>{{ $obat->nama_obat }}</td>
                                     <td>{{ $obat->kemasan }}</td>
-                                    <td>{{ number_format($obat->harga, 0, ',', '.') }}</td>
+                                    <td>Rp {{ number_format($obat->harga, 0, ',', '.') }}</td>
+                                    <td>{{ $obat->stok }}</td>
                                     <td>
                                         <a href="{{ route('obat.edit', $obat->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit">Edit</i>
+                                            <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <form action="{{ route('obat.destroy', $obat->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('obat.destroy', $obat->id) }}" method="POST" style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin hapus?')">
-                                                <i class="fas fa-trash">Hapus</i>
+                                            <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus obat ini?')">
+                                                <i class="fas fa-trash"></i> Hapus
                                             </button>
                                         </form>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">Belum ada data obat.</td>
+                                    <td class="text-center" colspan="5">
+                                        Belum ada data obat
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
-                        
                     </table>
                 </div>
 

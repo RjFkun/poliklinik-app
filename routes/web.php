@@ -8,7 +8,8 @@ use App\Http\Controllers\ObatController;
 use App\Http\Controllers\JadwalPeriksaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Pasien\PoliController as PasienPoliController;
-
+use App\Http\Controllers\Dokter\PeriksaPasienController as DokterPeriksaPasienController;
+use App\Http\Controllers\Dokter\RiwayatPasienController;
 
 
 
@@ -22,8 +23,6 @@ Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->na
 Route::get('/register', [App\Http\Controllers\AuthController::class, 'showregister'])->name('register');
 Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
-
-
 
 
 
@@ -43,8 +42,12 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         return view('dokter.dashboard');
     })->name('dokter.dashboard');
     Route::resource('jadwal-periksa', JadwalPeriksaController::class);
+    Route::get('periksa-pasien', [DokterPeriksaPasienController::class, 'index'])->name('periksa-pasien.index');
+    Route::get('periksa-pasien/{id}/create', [DokterPeriksaPasienController::class, 'create'])->name('periksa-pasien.create');
+    Route::post('periksa-pasien', [DokterPeriksaPasienController::class, 'store'])->name('periksa-pasien.store');
+    Route::get('riwayat-pasien', [RiwayatPasienController::class, 'index'])->name('riwayat-pasien.index');
+    Route::get('riwayat-pasien/{id}', [RiwayatPasienController::class, 'show'])->name('riwayat-pasien.show');
 });
-
  Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->group(function () 
 {  Route::get('/dashboard', function(){
     return view('pasien.dashboard');

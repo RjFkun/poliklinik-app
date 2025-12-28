@@ -13,9 +13,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="nama_obat" class="form-label">Nama Obat
-                                            <span class="text-danger">*</span>
-                                        </label>
+                                        <label for="nama_obat" class="form-label">Nama Obat <span class="text-danger">*</span></label>
                                         <input type="text" name="nama_obat" id="nama_obat"
                                             class="form-control @error('nama_obat') is-invalid @enderror"
                                             value="{{ old('nama_obat') }}" required>
@@ -25,29 +23,54 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group mb-3">
+                                    <label for="kemasan" class="form-label">Kemasan <span class="text-danger">*</span></label>
+
+                                    <select name="kemasan" id="kemasan"
+                                        class="form-control @error('kemasan') is-invalid @enderror" required>
+                                        <option value="">Pilih Kemasan</option>
+
+                                        @php
+                                        $opsi = ['Strip', 'Botol', 'Sachet', 'Tube', 'Box'];
+                                        @endphp
+
+                                        @foreach($opsi as $k)
+                                        <option value="{{ $k }}" {{ old('kemasan') === $k ? 'selected' : '' }}>
+                                            {{ $k }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('kemasan')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="kemasan" class="form-label">Kemasan</label>
-                                        <input type="text" name="kemasan" id="kemasan"
-                                            class="form-control @error('kemasan') is-invalid @enderror"
-                                            value="{{ old('kemasan') }}" placeholder="Contoh: Strip, Botol, Tube">
-                                        @error('kemasan')
+                                        <label for="harga" class="form-label">Harga <span class="text-danger">*</span></label>
+                                        <input type="number" name="harga" id="harga"
+                                            class="form-control @error('harga') is-invalid @enderror"
+                                            value="{{ old('harga') }}" required min="0" step="1">
+                                        @error('harga')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group mb-3">
-                                <label for="harga" class="form-label">Harga
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input type="number" name="harga" id="harga"
-                                    class="form-control @error('harga') is-invalid @enderror"
-                                    value="{{ old('harga') }}" required min="0" step="1">
-                                @error('harga')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="stok" class="form-label">Stok <span class="text-danger">*</span></label>
+                                        <input type="number" name="stok" id="stok"
+                                            class="form-control @error('stok') is-invalid @enderror"
+                                            value="{{ old('stok', 0) }}" required min="0" step="1">
+                                        @error('stok')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group mt-4">

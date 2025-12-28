@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Poli;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
-use PDO;
 
 class PoliController extends Controller
 {
@@ -52,7 +50,8 @@ class PoliController extends Controller
     public function destroy($id)
     {
         $poli = Poli::findOrFail($id);
-        $poli->delete($poli);
+        $poli->delete();
+
         return redirect()->route('polis.index')->with('success', 'Polis Berhasil di hapus !');
     }
 }
