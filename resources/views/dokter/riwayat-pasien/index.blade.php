@@ -19,14 +19,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{-- riwayatPasien = list Periksa + relasi daftarPoli/pasien/detail --}}
                                     @forelse($riwayatPasien as $riwayat)
                                         <tr>
                                             <td>{{ $riwayat->daftarPoli->no_antrian }}</td>
-                                            <td>{{ $riwayat->daftarPoli->pasien->name }}</td>
+                                            <td>{{ $riwayat->daftarPoli->pasien->nama }}</td>
                                             <td>{{ $riwayat->daftarPoli->keluhan }}</td>
                                             <td>{{ \Carbon\Carbon::parse($riwayat->tgl_periksa)->format('d/m/Y') }}</td>
                                             <td>Rp {{ number_format($riwayat->biaya_periksa, 0, ',', '.') }}</td>
                                             <td>
+                                                {{-- buka detail 1 pemeriksaan --}}
                                                 <a href="{{ route('riwayat-pasien.show', $riwayat) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i> Detail

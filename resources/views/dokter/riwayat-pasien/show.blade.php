@@ -12,6 +12,7 @@
                 <div class="card">
                     <h5 class="card-header">Informasi Pasien</h5>
                     <div class="card-body">
+                        {{-- info pasien + poli + dokter dari relasi daftarPoli -> jadwalPeriksa --}}
                         <p><strong>Nama Pasien:</strong> {{ $periksa->daftarPoli->pasien->nama }}</p>
                         <p><strong>No. Antrian:</strong> {{ $periksa->daftarPoli->no_antrian }}</p>
                         <p><strong>Keluhan:</strong> {{ $periksa->daftarPoli->keluhan }}</p>
@@ -24,6 +25,7 @@
                 <div class="card mb-3">
                     <h5 class="card-header">Catatan Dokter</h5>
                     <div class="card-body">
+                        {{-- catatan bebas dari dokter (nullable) --}}
                         <p>{{ $periksa->catatan ?: 'Tidak ada catatan' }}</p>
                     </div>
                 </div>
@@ -41,6 +43,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{-- detailPeriksas = list obat yang dipilih saat periksa --}}
                                     @foreach($periksa->detailPeriksas as $index => $detail)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
@@ -59,6 +62,7 @@
                 <div class="card">
                     <div class="card-body text-center">
                         <h5 class="card-title">Total Biaya Periksa</h5>
+                        {{-- total biaya yang tersimpan di tabel periksa --}}
                         <h3 class="text-primary">Rp {{ number_format($periksa->biaya_periksa, 0, ',', '.') }}</h3>
                     </div>
                 </div>

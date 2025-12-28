@@ -31,6 +31,7 @@
                                         @endif
                                         <form action="{{ route('pasien.daftar.submit') }}" method="POST">
                                             @csrf
+                                            {{-- id pasien yang sedang login --}}
                                             <input type="hidden" name="id_pasien" value="{{ $user->id }}">
 
                                             <div class="mb-3">
@@ -42,6 +43,7 @@
 
                                             <div class="mb-3">
                                                 <label for="selectPoli" class="form-label">Pilih Poli</label>
+                                                {{-- pilih poli (untuk filter jadwal) --}}
                                                 <select name="id_poli" id="selectPoli" class="form-control" required>
                                                     <option value="">-- Pilih Poli --</option>
                                                     @foreach ($polis as $poli)
@@ -54,6 +56,7 @@
                                             <div class="mb-3">
                                                 <label for="selectJadwal" class="form-label">Pilih Jadwal
                                                     Periksa</label>
+                                                {{-- jadwal berisi data-id-poli untuk filter via JS --}}
                                                 <select name="id_jadwal" id="selectJadwal" class="form-control" required>
                                                     <option value="">-- Pilih Jadwal --</option>
                                                     @foreach ($jadwals as $jadwal)
@@ -68,6 +71,7 @@
 
                                             <div class="mb-3">
                                                 <label for="keluhan" class="form-label">Keluhan</label>
+                                                {{-- keluhan pasien sebelum diperiksa dokter --}}
                                                 <textarea name="keluhan" id="keluhan" rows="3" class="form-control"></textarea>
                                             </div>
 
@@ -91,6 +95,7 @@
         const selectPoli = document.getElementById('selectPoli');
         const selectJadwal = document.getElementById('selectJadwal');
 
+        // filter jadwal berdasarkan poli yang dipilih
         selectPoli.addEventListener('change', function() {
             const poliId = this.value;
 
@@ -105,6 +110,7 @@
             selectJadwal.value = "";
         });
 
+        // kalau user pilih jadwal duluan, otomatis set poli sesuai jadwal
         selectJadwal.addEventListener('change', function() {
             const selected = this.options[this.selectedIndex];
             const poliId = selected.dataset.idPoli;

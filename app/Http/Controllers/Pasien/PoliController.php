@@ -14,7 +14,9 @@ class PoliController extends Controller
 {
     public function get()
     {
+        // user login
         $user = Auth::user();
+        // master poli + jadwal (relasi dokter->poli)
         $polis = Poli::all();
         $jadwals = JadwalPeriksa::with('dokter', 'dokter.poli')->get();
 
@@ -27,6 +29,7 @@ class PoliController extends Controller
 
     public function submit(Request $request)
     {
+        // validasi input form daftar poli
         $request->validate([
             'id_poli' => 'required|exists:poli,id',
             'id_jadwal' => 'required|exists:jadwal_periksa,id',
@@ -34,8 +37,10 @@ class PoliController extends Controller
             'id_pasien' => 'required|exists:users,id',
         ]);
 
+        // hitung antrian: jumlah yang sudah daftar di jadwal tsb
         $jumlahSudahDaftar = DaftarPoli::where('id_jadwal', $request->id_jadwal)->count();
 
+        // simpan pendaftaran poli
         $daftar = DaftarPoli::create([
             'id_pasien' => $request->id_pasien,
             'id_jadwal' => $request->id_jadwal,
@@ -43,6 +48,7 @@ class PoliController extends Controller
             'no_antrian' => $jumlahSudahDaftar + 1,
         ]);
 
+        // kembali + flash message
         return redirect()->back()
             ->with('message', 'Berhasil mendaftar ke poli!')
             ->with('type', 'success');

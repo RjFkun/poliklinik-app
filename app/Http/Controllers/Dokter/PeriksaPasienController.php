@@ -14,8 +14,10 @@ class PeriksaPasienController extends Controller
 {
     public function index()
     {
+        // dokter login
         $dokterId = Auth::id();
 
+        // ambil antrian pasien untuk jadwal dokter ini
         $daftarPasien = DaftarPoli::with(['pasien', 'jadwalPeriksa', 'periksas'])
             ->whereHas('jadwalPeriksa', function ($query) use ($dokterId) {
                 $query->where('id_dokter', $dokterId);
@@ -28,21 +30,25 @@ class PeriksaPasienController extends Controller
 
     public function create($id)
     {
+        // list obat untuk dropdown
         $obats = Obat::all();
+        // $id = id_daftar_poli (antrian)
         return view('dokter.periksa-pasien.create', compact('obats', 'id'));
     }
 
     public function store(Request $request)
     {
+        // validasi data dari form (json obat + biaya)
         $request->validate([
             'obat_json' => 'required',
             'catatan' => 'nullable|string',
             'biaya_periksa' => 'required|integer',
         ]);
 
+        // decode obat_json: [{id, kuantitas}, ...]
         $obatData = json_decode($request->obat_json, true);
 
-        // Validasi stok obat sebelum disimpan (sesuai dengan kuantitas)
+        // cek stok sebelum simpan (sesuai kuantitas)
         foreach ($obatData as $item) {
             $obat = Obat::findOrFail($item['id']);
             if ($obat->stok < $item['kuantitas']) {
@@ -52,6 +58,7 @@ class PeriksaPasienController extends Controller
             }
         }
 
+        // simpan periksa (header)
         $periksa = Periksa::create([
             'id_daftar_poli' => $request->id_daftar_poli,
             'tgl_periksa' => now(),
@@ -59,7 +66,7 @@ class PeriksaPasienController extends Controller
             'biaya_periksa' => $request->biaya_periksa ?? 150000,
         ]);
 
-        // Simpan detail periksa dan kurangi stok obat sesuai kuantitas
+        // simpan detail + kurangi stok
         foreach ($obatData as $item) {
             DetailPeriksa::create([
                 'id_periksa' => $periksa->id,
@@ -67,11 +74,12 @@ class PeriksaPasienController extends Controller
                 'kuantitas' => $item['kuantitas'],
             ]);
 
-            // Kurangi stok obat sesuai kuantitas
+            // decrement stok sesuai kuantitas
             $obat = Obat::findOrFail($item['id']);
             $obat->decrement('stok', $item['kuantitas']);
         }
 
+        // kembali ke antrian + pesan
         return redirect()->route('periksa-pasien.index')
             ->with('success', 'Data periksa berhasil disimpan.')
             ->with('type', 'success');

@@ -17,11 +17,13 @@
                         <form action="{{ route('periksa-pasien.store') }}" method="POST">
                             @csrf
 
+                            {{-- id daftar poli (antrian) yang sedang diperiksa --}}
                             <input type="hidden" name="id_daftar_poli" value="{{ $id }}">
 
                             <div class="form-group mb-3">
                                 <label for="obat" class="form-label">Pilih Obat</label>
                                 <div class="input-group">
+                                    {{-- dropdown obat (disabled kalau stok habis) --}}
                                     <select id="select-obat" class="form-select">
                                         <option value="">-- Pilih Obat --</option>
                                         @foreach ($obats as $obat)
@@ -33,6 +35,7 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    {{-- qty obat yang dipilih (default 1) --}}
                                     <input type="number" id="input-kuantitas" class="form-control" placeholder="Qty" min="1" value="1" style="max-width: 80px;">
                                     <button type="button" class="btn btn-outline-secondary" id="btn-tambah-obat">Tambah</button>
                                 </div>
@@ -45,13 +48,17 @@
 
                             <div class="form-group mb-3">
                                 <label for="catatan" class="form-label">Catatan</label>
+                                {{-- catatan dokter saat periksa --}}
                                 <textarea name="catatan" id="catatan" class="form-control">{{ old('catatan') }}</textarea>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label>Obat Terpilih</label>
+                                {{-- list obat yang dipilih via JS --}}
                                 <ul id="obat-terpilih" class="list-group mb-2"></ul>
+                                {{-- total biaya periksa (diisi otomatis dari total harga obat) --}}
                                 <input type="hidden" name="biaya_periksa" id="biaya_periksa" value="0">
+                                {{-- format: [{id: <id_obat>, kuantitas: <qty>}, ...] --}}
                                 <input type="hidden" name="obat_json" id="obat_json">
                             </div>
 
@@ -71,6 +78,7 @@
 </x-layouts.app>
 
 <script>
+    // ambil element DOM
     const selectObat = document.getElementById('select-obat');
     const inputKuantitas = document.getElementById('input-kuantitas');
     const btnTambahObat = document.getElementById('btn-tambah-obat');
@@ -79,6 +87,7 @@
     const inputObatJson = document.getElementById('obat_json');
     const totalHargaEl = document.getElementById('total-harga');
 
+    // struktur: [{ id, nama, harga, stok, kuantitas }, ...]
     let daftarObat = [];
 
     btnTambahObat.addEventListener('click', () => {
@@ -94,7 +103,7 @@
             return;
         }
 
-        // Validasi stok
+        // validasi stok
         if (stok <= 0) {
             alert(`❌ Obat "${nama}" habis! Stok tidak tersedia.`);
             selectObat.selectedIndex = 0;
@@ -102,19 +111,17 @@
             return;
         }
 
-        // Validasi kuantitas
+        // validasi kuantitas
         if (kuantitas <= 0) {
             alert('Kuantitas harus minimal 1');
             return;
         }
 
-        // Cek apakah obat sudah ada di list
+        // kalau obat sudah ada -> tambah qty
         const existingObat = daftarObat.find(o => o.id == id);
         if (existingObat) {
-            // Update kuantitas jika obat sudah ada
             existingObat.kuantitas += kuantitas;
         } else {
-            // Tambah obat baru
             daftarObat.push({
                 id,
                 nama,
@@ -162,6 +169,7 @@
             listObat.appendChild(item);
         });
 
+        // kirim total & json ke backend saat submit
         inputBiaya.value = total;
         totalHargaEl.textContent = `Rp ${total.toLocaleString()}`;
         inputObatJson.value = JSON.stringify(daftarObat.map(o => ({id: o.id, kuantitas: o.kuantitas})));

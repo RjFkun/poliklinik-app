@@ -28,6 +28,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {{-- daftar pasien yang sudah daftar poli (antrian) --}}
                             @forelse ($daftarPasien as $dp)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
@@ -35,9 +36,11 @@
                                     <td>{{ $dp->keluhan }}</td>
                                     <td>{{ $dp->no_antrian }}</td>
                                     <td>
+                                        {{-- kalau sudah ada data periksa -> tampilkan badge --}}
                                         @if ($dp->periksas->isNotEmpty())
                                             <span class="badge bg-success">Sudah Diperiksa</span>
                                         @else
+                                            {{-- kalau belum -> tombol masuk form periksa --}}
                                             <a href="{{ route('periksa-pasien.create', $dp->id) }}"
                                                 class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Periksa
